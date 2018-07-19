@@ -12,44 +12,44 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DeleteEmpServlet extends HttpServlet{
+public class DeleteEmpServlet extends HttpServlet {
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		
-	}
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		// 获取数据
+		String id = request.getParameter("id");
+		response.sendRedirect("show");
+		// String name = request.getParameter("name");
+		// String age = request.getParameter("age");
+		//
+		// 连接数据
+		Connection conn = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo01", "root", "123");
+			PreparedStatement pre = conn.prepareStatement("delete from emp where id=?");
+			pre.setString(1, id);
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-				request.setCharacterEncoding("utf-8");
-		//获取数据
-		        String id = request.getParameter("id");
-				String name = request.getParameter("name");
-				String age = request.getParameter("age");
-				
-		//连接数据
+			// response.setContentType("text/html,charset=utf-8");
+			pre.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
 				try {
-					Class.forName("com.mysql.jdbc.Driver");
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo01","root","123");
-					PreparedStatement pre = conn.prepareStatement("delete from emp where id=?");
-					pre.setString(1, id);
-					pre.executeUpdate();
-					response.setContentType("text/html,charset=utf-8");
-					PrintWriter out = response.getWriter();
-					out.print("删除成功");
-					out.println("<a href='show'>查删除完成数据</a>");
-					out.close();
-					} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
+					conn.close();
+				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				
-	}
+			}
+		}
 
-	
+	}
 }
